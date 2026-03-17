@@ -5,6 +5,7 @@ import com.fplabs.Exception.ServiceNotAvailableException;
 import com.fplabs.Exception.UnauthorisedException;
 import com.fplabs.client.model.KarzaRequest;
 import com.fplabs.client.model.KarzaResponse;
+import com.fplabs.config.KarzaConfiguration;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -18,15 +19,16 @@ import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 @Singleton
 public class KarzaClient {
     private static final Logger LOG = LoggerFactory.getLogger(KarzaClient.class);
-    @Inject
-    @Client("https://testapi.karza.in/")
-    HttpClient client;
 
+    @Inject
+    @Client(value = "${karza.api.base-url}", configuration = KarzaConfiguration.class)
+    private HttpClient client;
+
+    @Value("${karza.api.base-url}")
+    String KarzaBaseUrl;
 
     @Value("${karza.api.key}")
     String karzaApiKey;
@@ -37,7 +39,8 @@ public class KarzaClient {
         LOG.info("Calling Karza API for PAN verification");
         try {
             HttpRequest<?> request = HttpRequest.POST("/v2/pan-authentication", karzaRequest)
-                    .header("x-karza-key", karzaApiKey);
+                    .header("x-karza-key", karzaApiKey)
+                    .header("Content-Type", "application/json");
 
             HttpResponse<KarzaResponse> response = client.toBlocking().exchange(request, KarzaResponse.class);
 
@@ -54,10 +57,10 @@ public class KarzaClient {
             HttpStatus statusCode = e.getStatus();
             LOG.error("HTTP Error: {}, Message: {}", statusCode.getCode(), e.getMessage());
 
-            if (statusCode == HttpStatus.BAD_REQUEST) {
+            if (HttpStatus.BAD_REQUEST.equals(statusCode)) {
                 LOG.error("Bad Request - Invalid data");
                 throw new BadRequestException("Invalid request data");
-            } else if (statusCode == HttpStatus.UNAUTHORIZED) {
+            } else if (HttpStatus.UNAUTHORIZED.equals(statusCode)) {
                 LOG.error("Unauthorized - Wrong API key or authentication failed");
                 throw new UnauthorisedException("Invalid or expired Karza API key.");
             }else {

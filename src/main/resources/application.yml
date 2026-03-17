@@ -1,6 +1,9 @@
 micronaut:
   application:
     name: userNEW3
+  http:
+    client:
+      read-timeout: 30s
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/khusbu
@@ -10,3 +13,4 @@ datasources:
 karza:
   api:
     key: EALKBXrX5NuFSqHW
+    base-url: "https://testapi.karza.in/"
