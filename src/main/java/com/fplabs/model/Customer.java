@@ -1,17 +1,29 @@
 package com.fplabs.model;
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fplabs.enums.PanStatus;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class Customer {
 
+    @NotNull
     private int id;
+    @NotNull
     private String fullName;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+    @NotNull
+    @Pattern(regexp = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$", message = "Invalid PAN format")
     private String pan;
+    @NotNull
+    @Pattern(regexp = "^[0-9]{10}$")
     private String mobileNumber;
+    @NotNull
     private String email;
-    private String PanStatus;
+
+    private PanStatus panStatus;
 
     public Customer() {
     }
@@ -21,7 +33,7 @@ public class Customer {
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.pan = pan;
-        this.PanStatus =  "Pending";
+        this.panStatus =  null;
         this.mobileNumber = mobileNumber;
         this.email = email;
     }
@@ -75,12 +87,12 @@ public class Customer {
         this.email = email;
     }
 
-    public String getPanStatus() {
-        return PanStatus;
+    public PanStatus getPanStatus() {
+        return panStatus;
     }
 
-    public void setPanStatus(String panStatus) {
-        PanStatus = panStatus;
+    public void setPanStatus(PanStatus panStatus) {
+        this.panStatus = panStatus;
     }
 
     @Override
@@ -92,7 +104,7 @@ public class Customer {
                 ", pan='" + pan + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", email='" + email + '\'' +
-                ", PanStatus='" + PanStatus + '\'' +
+                ", panStatus=" + panStatus +
                 '}';
     }
 }

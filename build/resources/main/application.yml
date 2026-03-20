@@ -1,6 +1,8 @@
 micronaut:
   application:
     name: userNEW3
+#  server:
+#    port: 8081
   http:
     client:
       read-timeout: 30s

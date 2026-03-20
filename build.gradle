@@ -1,7 +1,7 @@
 plugins {
     id("io.micronaut.application") version "4.6.1"
     id("com.gradleup.shadow") version "8.3.9"
-    id("io.micronaut.aot") version "4.6.1"
+
 }
 
 version = "0.1"
@@ -12,57 +12,47 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("io.micronaut:micronaut-http-validation")
-    annotationProcessor("io.micronaut.data:micronaut-data-processor")
 
+
+    // Micronaut core
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("io.micronaut:micronaut-inject")
+    implementation("io.micronaut:micronaut-http-client")
+
+    // RxJava3 and reactive HTTP client support
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    implementation 'io.micronaut.rxjava3:micronaut-rxjava3'
+    implementation("io.micronaut.rxjava3:micronaut-rxjava3-http-client")
+
+    // Database and SQL
     implementation("io.micronaut.sql:micronaut-jdbi")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
 
-    // JDBI dependencies (keep only these versions)
+    // JDBI
     implementation("org.jdbi:jdbi3-core:3.45.0")
     implementation("org.jdbi:jdbi3-sqlobject:3.45.0")
 
-    compileOnly("io.micronaut:micronaut-http-client")
-
-    // Runtime dependencies
-    runtimeOnly("ch.qos.logback:logback-classic")
-    runtimeOnly("org.yaml:snakeyaml")
-    runtimeOnly("org.postgresql:postgresql") // Keep only this one
-
-    // Test dependencies
-    testImplementation("io.micronaut:micronaut-http-client")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Validation
+    annotationProcessor("io.micronaut:micronaut-http-validation")
+    annotationProcessor("io.micronaut.data:micronaut-data-processor")
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.hibernate.validator:hibernate-validator:6.0.13.Final'
 
-
-
-    implementation("io.micronaut:micronaut-runtime")
-    implementation("io.micronaut:micronaut-inject")
-
-    implementation("io.micronaut:micronaut-http-client")
-    implementation("io.micronaut:micronaut-runtime")
-    runtimeOnly("ch.qos.logback:logback-classic")
-
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
-    implementation 'io.micronaut.rxjava3:micronaut-rxjava3'
-
-    implementation("io.micronaut.rxjava2:micronaut-rxjava2")
-    implementation("io.micronaut.rxjava2:micronaut-rxjava2-http-client")
-
+    // Jackson for JSON
     implementation 'io.micronaut:micronaut-jackson-databind'
-
-    // Jackson core libraries
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
-
-    // For LocalDate support
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
 
+    // Logging and runtime
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("org.yaml:snakeyaml")
+    runtimeOnly("org.postgresql:postgresql")
 
-
-
+    // Testing
+    testImplementation("io.micronaut:micronaut-http-client")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 
@@ -83,18 +73,6 @@ micronaut {
     processing {
         incremental(true)
         annotations("com.example.*")
-    }
-    aot {
-        // Please review carefully the optimizations enabled below
-        // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
-        optimizeServiceLoading = false
-        convertYamlToJava = false
-        precomputeOperations = true
-        cacheEnvironment = true
-        optimizeClassLoading = true
-        deduceEnvironment = true
-        optimizeNetty = true
-        replaceLogbackXml = true
     }
 }
 

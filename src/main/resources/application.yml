@@ -1,6 +1,8 @@
 micronaut:
   application:
     name: userNEW3
+#  server:
+#    port: 8081
   http:
     client:
       read-timeout: 30s
@@ -13,4 +15,8 @@ datasources:
 karza:
   api:
     key: EALKBXrX5NuFSqHW
+    pan-authentication-path: /v2/pan-authentication
+    api-key-header: x-karza-key
+    content-type-header: Content-Type
+    content-type-json: application/json
     base-url: "https://testapi.karza.in/"
